@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="../dist/viewer.min.css">
+  <script></script>
+</head>
+<body>
+  <!-- <div>
+    <img id="image" src="./images/loading.jpeg" alt="Picture">
+  </div> -->
+
+  <div style="height: 500px;width: 500px;">
+    <ul id="images" style="display: none;">
+      <li><img originsrc="http://127.0.0.1:5500/public/images/1.jpeg" src="1" alt="Picture 1"></li>
+      <li><img originsrc="http://127.0.0.1:5500/public/images/2.jpeg" src="1" alt="Picture 2"></li>
+      <li><img originsrc="http://127.0.0.1:5500/public/images/3.jpeg" src="1" alt="Picture 3"></li>
+    </ul>
+  </div>
+  <script src="https://unpkg.com/jquery@3/dist/jquery.slim.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap@4/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="../dist/viewer.js"></script>
+  <script>
+const viewer = new Viewer(document.getElementById('images'), {
+  inline: true,
+  loading: true,
+  noComplete: true,
+  onImageSuc(data){
+    let {img,index} = data
+    setTimeout(function(){
+      img.src = `http://127.0.0.1:5500/public/images/${ index+ 1}.jpeg`
+      viewer.updateItem(img,index)
+     },0)
+
+    console.log("onImageSuc",data)
+  },
+  onImageErr(data){
+    let {img,index} = data
+    img.src = `http://127.0.0.1:5500/public/images/loading.jpeg`
+    viewer.updateItem(img,index)
+    setTimeout(function(){
+      img.src = `http://127.0.0.1:5500/public/images/${index + 1}.jpeg`
+      viewer.updateItem(img,index)
+    },5000)
+
+
+  },
+  initialViewIndex:2,
+  viewed(e) {
+    // viewer.zoomTo(1);
+    console.log("viewed",e)
+  },
+  view(e){
+    console.log("view",e)
+  }
+});
+// viewer.show()
+  </script>
+</body>
+</html>
