@@ -1,7 +1,7 @@
 var fs = require("fs");
 var count = 20
 var timer = null
-fs.open("/Users/bill/Library/Application Support/nw-minxin/Default/mynedb/message_12584.db","w",function(err,fp){
+fs.open("/Users/bill/Library/Application Support/nw-minxin/Default/mynedb/message_12584.db","a+",function(err,fp){
  if(err) return console.error(err);
  // 这里面可以进行我们的操作
 //  fs.close(fp);

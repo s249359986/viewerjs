@@ -85,6 +85,7 @@ class Viewer {
     this.wheeling = false;
     this.zooming = false;
     this.pointerMoved = false;
+    this.currentError = false; // 当前展示的图片不展示
     this.id = getUniqueID();
     this.init();
   }
@@ -166,6 +167,9 @@ class Viewer {
           let onLoad;
           let onError;
           addListener(image, EVENT_LOAD, onLoad = () => {
+            if(index === this.index){
+              this.currentError = false;
+            }
             this.options.onImageSuc && this.options.onImageSuc({
               img:image,
               index,
@@ -176,6 +180,9 @@ class Viewer {
             once: true,
           });
           addListener(image, EVENT_ERROR, onError = () => {
+            if(index === this.index){
+              this.currentError = true;
+            }
             this.options.onImageErr && this.options.onImageErr({
               img:image,
               index,

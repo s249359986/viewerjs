@@ -219,7 +219,8 @@ export default {
 
 
     if(!force){
-      if (this.hiding || this.played || index < 0 || index >= this.length
+      let currentError = (this.currentError && index === this.index)
+      if (currentError ||this.hiding || this.played || index < 0 || index >= this.length
         || (this.viewed && index === this.index)) {
         return this;
       }

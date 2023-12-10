@@ -14,9 +14,9 @@
 
   <div style="height: 500px;width: 500px;">
     <ul id="images" style="display: none;">
-      <li><img originsrc="http://127.0.0.1:5500/public/images/1.jpeg" src="1" alt="Picture 1"></li>
-      <li><img originsrc="http://127.0.0.1:5500/public/images/2.jpeg" src="1" alt="Picture 2"></li>
-      <li><img originsrc="http://127.0.0.1:5500/public/images/3.jpeg" src="1" alt="Picture 3"></li>
+      <li><img originsrc="http://127.0.0.1:5500/public/images/1.jpeg" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li>
+      <li><img originsrc="http://127.0.0.1:5500/public/images/2.jpeg" src="http://127.0.0.1:5500/222.jpeg" alt="Picture 2"></li>
+      <li><img originsrc="http://127.0.0.1:5500/public/images/3.jpeg" src="http://127.0.0.1:5500/333.jpeg" alt="Picture 3"></li>
     </ul>
   </div>
   <script src="https://unpkg.com/jquery@3/dist/jquery.slim.min.js" crossorigin="anonymous"></script>
@@ -29,10 +29,10 @@ const viewer = new Viewer(document.getElementById('images'), {
   noComplete: true,
   onImageSuc(data){
     let {img,index} = data
-    setTimeout(function(){
-      img.src = `http://127.0.0.1:5500/public/images/${ index+ 1}.jpeg`
-      viewer.updateItem(img,index)
-     },0)
+    // setTimeout(function(){
+    //   img.src = `http://127.0.0.1:5500/public/images/${ index+ 1}.jpeg`
+    //   viewer.updateItem(img,index)
+    //  },0)
 
     console.log("onImageSuc",data)
   },
@@ -40,6 +40,8 @@ const viewer = new Viewer(document.getElementById('images'), {
     let {img,index} = data
     img.src = `http://127.0.0.1:5500/public/images/loading.jpeg`
     viewer.updateItem(img,index)
+
+
     setTimeout(function(){
       img.src = `http://127.0.0.1:5500/public/images/${index + 1}.jpeg`
       viewer.updateItem(img,index)

@@ -5,7 +5,7 @@
  * Copyright 2015-present Chen Fengyuan
  * Released under the MIT license
  *
- * Date: 2023-11-28T09:50:14.108Z
+ * Date: 2023-12-08T03:37:39.411Z
  */
 
 'use strict';
@@ -1814,7 +1814,8 @@ var methods = {
     var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     index = Number(index) || 0;
     if (!force) {
-      if (this.hiding || this.played || index < 0 || index >= this.length || this.viewed && index === this.index) {
+      var currentError = this.currentError && index === this.index;
+      if (currentError || this.hiding || this.played || index < 0 || index >= this.length || this.viewed && index === this.index) {
         return this;
       }
     }
@@ -3019,6 +3020,7 @@ var Viewer = /*#__PURE__*/function () {
     this.wheeling = false;
     this.zooming = false;
     this.pointerMoved = false;
+    this.currentError = false; // 当前展示的图片不展示
     this.id = getUniqueID();
     this.init();
   }
@@ -3094,6 +3096,9 @@ var Viewer = /*#__PURE__*/function () {
             var onLoad;
             var onError;
             addListener(image, EVENT_LOAD, onLoad = function onLoad() {
+              if (index === _this.index) {
+                _this.currentError = false;
+              }
               _this.options.onImageSuc && _this.options.onImageSuc({
                 img: image,
                 index: index
@@ -3104,6 +3109,9 @@ var Viewer = /*#__PURE__*/function () {
               once: true
             });
             addListener(image, EVENT_ERROR, onError = function onError() {
+              if (index === _this.index) {
+                _this.currentError = true;
+              }
               _this.options.onImageErr && _this.options.onImageErr({
                 img: image,
                 index: index
