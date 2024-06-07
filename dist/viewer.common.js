@@ -5,7 +5,7 @@
  * Copyright 2015-present Chen Fengyuan
  * Released under the MIT license
  *
- * Date: 2023-12-08T03:37:39.411Z
+ * Date: 2024-06-06T09:54:06.879Z
  */
 
 'use strict';
@@ -994,18 +994,20 @@ var render = {
     }
   },
   initList: function initList() {
-    var _this = this;
+    var _this2 = this;
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    // params {isBandCb}
     var element = this.element,
       options = this.options,
       list = this.list;
     var items = [];
-
+    var isBandCb = params.isBandCb;
     // initList may be called in this.update, so should keep idempotent
     list.innerHTML = '';
     forEach(this.images, function (image, index) {
       var src = image.src;
       var alt = image.alt || getImageNameFromURL(src);
-      var url = _this.getImageURL(image);
+      var url = _this2.getImageURL(image);
       if (src || url) {
         var item = document.createElement('li');
         var img = document.createElement('img');
@@ -1032,7 +1034,7 @@ var render = {
       }
     });
     this.items = items;
-    forEach(items, function (item) {
+    forEach(items, function (item, index) {
       var image = item.firstElementChild;
       var onLoad;
       var onError;
@@ -1041,15 +1043,26 @@ var render = {
         addClass(item, CLASS_LOADING);
       }
       addListener(image, EVENT_LOAD, onLoad = function onLoad(event) {
+        isBandCb && options.onImageErr && options.onImageErr({
+          img: image,
+          index: index
+        });
         removeListener(image, EVENT_ERROR, onError);
         if (options.loading) {
           removeClass(item, CLASS_LOADING);
         }
-        _this.loadImage(event);
+        _this2.loadImage(event);
       }, {
         once: true
       });
+      if (options['noComplete']) {
+        image.src = image.src || _this2.getImageURL(image);
+      }
       addListener(image, EVENT_ERROR, onError = function onError() {
+        isBandCb && options.onImageErr && options.onImageErr({
+          img: image,
+          index: index
+        });
         removeListener(image, EVENT_LOAD, onLoad);
         if (options.loading) {
           removeClass(item, CLASS_LOADING);
@@ -1093,7 +1106,7 @@ var render = {
     }));
   },
   initImage: function initImage(done) {
-    var _this2 = this;
+    var _this3 = this;
     var options = this.options,
       image = this.image,
       viewerData = this.viewerData;
@@ -1112,7 +1125,7 @@ var render = {
       var initialCoverage = Math.max(0, Math.min(1, options.initialCoverage));
       var width = viewerWidth;
       var height = viewerHeight;
-      _this2.imageInitializing = false;
+      _this3.imageInitializing = false;
       if (viewerHeight * aspectRatio > viewerWidth) {
         height = viewerWidth / aspectRatio;
       } else {
@@ -1147,15 +1160,15 @@ var render = {
         initialImageData.scaleX = 1;
         initialImageData.scaleY = 1;
       }
-      _this2.imageData = imageData;
-      _this2.initialImageData = initialImageData;
+      _this3.imageData = imageData;
+      _this3.initialImageData = initialImageData;
       if (done) {
         done();
       }
     });
   },
   renderImage: function renderImage(done) {
-    var _this3 = this;
+    var _this4 = this;
     var image = this.image,
       imageData = this.imageData;
     setStyle(image, assign({
@@ -1168,7 +1181,7 @@ var render = {
     if (done) {
       if ((this.viewing || this.moving || this.rotating || this.scaling || this.zooming) && this.options.transition && hasClass(image, CLASS_TRANSITION)) {
         var onTransitionEnd = function onTransitionEnd() {
-          _this3.imageRendering = false;
+          _this4.imageRendering = false;
           done();
         };
         this.imageRendering = {
@@ -2615,7 +2628,8 @@ var methods = {
     // 更新
     var ulSelector = this.viewer.querySelector(".".concat(NAMESPACE, "-list"));
     var tempList = ulSelector.childNodes;
-    var src = image.src;
+    var src = image.src,
+      isDone = image.isDone;
     var alt = image.alt || getImageNameFromURL(src);
     var url = this.getImageURL(image);
     if (src || url) {
@@ -2630,6 +2644,7 @@ var methods = {
       if (this.options.navbar) {
         img.src = src || url;
       }
+      img.isDone = isDone;
       img.alt = alt;
       img.setAttribute('data-original-url', url || src);
       item.setAttribute('data-index', index);
@@ -2696,7 +2711,9 @@ var methods = {
       setStyle(this.list, {
         width: 'auto'
       });
-      this.initList();
+      this.initList({
+        isBandCb: true
+      });
       if (this.isShown) {
         if (this.length) {
           if (this.viewed) {
@@ -3315,4 +3332,3 @@ var Viewer = /*#__PURE__*/function () {
 assign(Viewer.prototype, render, events, handlers, methods, others);
 
 module.exports = Viewer;
-//# sourceMappingURL=viewer.common.js.map

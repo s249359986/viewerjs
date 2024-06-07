@@ -1156,8 +1156,7 @@ export default {
   updateItemProxy(image,index) { // 更新
     const ulSelector = this.viewer.querySelector(`.${NAMESPACE}-list`);
     const tempList = ulSelector.childNodes
-
-    const { src } = image;
+    const { src,isDone } = image;
     const alt = image.alt || getImageNameFromURL(src);
     const url = this.getImageURL(image);
 
@@ -1177,7 +1176,7 @@ export default {
       if (this.options.navbar) {
         img.src = src || url;
       }
-
+      img.isDone = isDone;
       img.alt = alt;
       img.setAttribute('data-original-url', url || src);
       item.setAttribute('data-index', index);
@@ -1256,7 +1255,7 @@ export default {
         width: 'auto',
       });
 
-      this.initList();
+      this.initList({isBandCb:true});
 
       if (this.isShown) {
         if (this.length) {

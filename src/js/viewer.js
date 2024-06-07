@@ -197,7 +197,6 @@ class Viewer {
           }
         }
       }
-
       onLoadImage.call(this,images[this.index],this.index); // 优先当前的
 
       forEach(images, (image,index)=>{

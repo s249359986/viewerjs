@@ -14,9 +14,25 @@
 
   <div style="height: 500px;width: 500px;">
     <ul id="images" style="display: none;">
-      <li><img originsrc="http://127.0.0.1:5500/public/images/1.jpeg" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li>
-      <li><img originsrc="http://127.0.0.1:5500/public/images/2.jpeg" src="http://127.0.0.1:5500/222.jpeg" alt="Picture 2"></li>
-      <li><img originsrc="http://127.0.0.1:5500/public/images/3.jpeg" src="http://127.0.0.1:5500/333.jpeg" alt="Picture 3"></li>
+      <li><img data-id="1" originsrc="http://127.0.0.1:5500/public/images/number_1.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li>
+      <li><img data-id="2" originsrc="http://127.0.0.1:5500/public/images/number_2.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li>
+      <li><img data-id="3" originsrc="http://127.0.0.1:5500/public/images/number_3.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li>
+      <li><img data-id="4" originsrc="http://127.0.0.1:5500/public/images/number_4.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li>
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_5.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_6.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_7.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_8.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_9.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_10.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_11.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_12.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_13.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_14.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_15.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_16.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+      <!-- <li><img originsrc="http://127.0.0.1:5500/public/images/number_17.png" src="http://127.0.0.1:5500/111.jpeg" alt="Picture 1"></li> -->
+
     </ul>
   </div>
   <script src="https://unpkg.com/jquery@3/dist/jquery.slim.min.js" crossorigin="anonymous"></script>
@@ -27,6 +43,7 @@ const viewer = new Viewer(document.getElementById('images'), {
   inline: true,
   loading: true,
   noComplete: true,
+  inheritedAttributes:['originsrc'],
   onImageSuc(data){
     let {img,index} = data
     // setTimeout(function(){
@@ -39,26 +56,60 @@ const viewer = new Viewer(document.getElementById('images'), {
   onImageErr(data){
     let {img,index} = data
     img.src = `http://127.0.0.1:5500/public/images/loading.jpeg`
+
     viewer.updateItem(img,index)
 
-
     setTimeout(function(){
-      img.src = `http://127.0.0.1:5500/public/images/${index + 1}.jpeg`
+      // debugger
+      //img.src = `http://127.0.0.1:5500/public/images/number_${index + 1}.png`
+      img.src = img.getAttribute('originsrc');
+      debugger
       viewer.updateItem(img,index)
-    },5000)
+      console.log("onImageErr",data)
+    },0)
 
 
   },
   initialViewIndex:2,
   viewed(e) {
     // viewer.zoomTo(1);
-    console.log("viewed",e)
+    // console.log("viewed",e)
   },
   view(e){
-    console.log("view",e)
+    // console.log("view",e)
   }
 });
 // viewer.show()
+
+function add(name){
+  var newLi = document.createElement('li');
+
+// 创建一个新的 <img> 元素
+var newImg = document.createElement('img');
+
+// 设置 <img> 元素的属性
+newImg.setAttribute('data-id', name+'');
+newImg.setAttribute('originsrc', 'http://127.0.0.1:5500/public/images/number_'+name+'.png');
+newImg.setAttribute('src', 'http://127.0.0.1:5500/111.jpeg');
+newImg.setAttribute('alt', 'Picture ');
+newLi.appendChild(newImg);
+
+  document.getElementById("images").appendChild(newLi)
+  viewer.update()
+}
+
+setTimeout(function(){
+  add(5)
+  add(6)
+  add(7)
+  // add(19)
+  // setTimeout(function(){
+  //   add(8)
+  //   add(9)
+  // },3000)
+
+
+},5000)
   </script>
 </body>
 </html>

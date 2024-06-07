@@ -21,6 +21,7 @@ import {
   removeListener,
   setData,
   setStyle,
+  getData
 } from './utilities';
 
 export default {
@@ -73,13 +74,13 @@ export default {
       setStyle(this.viewer, this.viewerData);
     }
   },
-  initList() {
+  initList(params = {}) { // params {isBandCb}
     const { element, options, list } = this;
+    const _this = this
     const items = [];
-
+    const {isBandCb} = params
     // initList may be called in this.update, so should keep idempotent
     list.innerHTML = '';
-
     forEach(this.images, (image, index) => {
       const { src } = image;
       const alt = image.alt || getImageNameFromURL(src);
@@ -120,7 +121,7 @@ export default {
 
     this.items = items;
 
-    forEach(items, (item) => {
+    forEach(items, (item,index) => {
       const image = item.firstElementChild;
       let onLoad;
       let onError;
@@ -132,6 +133,11 @@ export default {
       }
 
       addListener(image, EVENT_LOAD, onLoad = (event) => {
+        isBandCb && options.onImageErr && options.onImageErr({
+          img:image,
+          index,
+        })
+
         removeListener(image, EVENT_ERROR, onError);
 
         if (options.loading) {
@@ -142,7 +148,15 @@ export default {
       }, {
         once: true,
       });
+      if(options['noComplete']){
+        image.src = image.src || this.getImageURL(image);
+      }
       addListener(image, EVENT_ERROR, onError = () => {
+        isBandCb && options.onImageErr && options.onImageErr({
+          img:image,
+          index,
+        })
+
         removeListener(image, EVENT_LOAD, onLoad);
 
         if (options.loading) {
